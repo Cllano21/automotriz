@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request
 import pandas as pd
 from sqlalchemy import create_engine
@@ -12,7 +13,7 @@ server = 'LAPTOP-8FGD0OMN\\SQLEXPRESS'
 database = 'tienda'
 username = 'sa'
 password = '1987'
-connection_string = f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server'
+connection_string = f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver=ODBC%20Driver%2018%20for%20SQL%20Server'
 engine = create_engine(connection_string)
 
 # Crear la instancia de la aplicación Dash
