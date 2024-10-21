@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request
 import pandas as pd
+import sqlalchemy
 from sqlalchemy import create_engine
 from dash import Dash, dcc, html, Input, Output
 import plotly.express as px
@@ -8,13 +9,21 @@ import plotly.express as px
 # Crear la instancia de la aplicación Flask
 app = Flask(__name__)
 
-# Configurar la base de datos
-server = 'LAPTOP-8FGD0OMN\\SQLEXPRESS'
-database = 'tienda'
-username = 'sa'
-password = '1987'
-connection_string = f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver=ODBC%20Driver%2018%20for%20SQL%20Server'
-engine = create_engine(connection_string)
+# Configurar la base de datos de Google Cloud SQL
+username = 'sqlserver'  # Usuario de Google Cloud SQL
+password = '1987'  # Contraseña de Google Cloud SQL
+server = '34.123.53.230'  # Dirección IP pública o privada de tu instancia en Google Cloud
+port = '1433'  # Puerto de SQL Server, generalmente 1433
+database = 'tienda'  # Nombre de la base de datos en Google Cloud SQL
+
+# Crear la cadena de conexión a Google Cloud SQL usando las variables correctas
+connection_string = (
+f"mssql+pyodbc://{username}:{password}@{server}:{port}/{database}"
+"?driver=ODBC+Driver+18+for+SQL+Server&Encrypt=yes&TrustServerCertificate=yes&Connection Timeout=30"
+)
+
+# Crear el engine con la cadena de conexión correcta
+engine = sqlalchemy.create_engine(connection_string)
 
 # Crear la instancia de la aplicación Dash
 dash_app = Dash(__name__, server=app, url_base_pathname='/dash/')
@@ -54,7 +63,7 @@ def update_graph(selected_company):
         """
         data = pd.read_sql(query_ranking, engine)
         data['utilidad_ejercicio'] = pd.to_numeric(data['utilidad_ejercicio'], errors='coerce')
-        data = data.sort_values(by='anio')
+        data = data.sort_values(by= 'anio')
         fig = px.scatter(data, x='anio', y='utilidad_ejercicio',
                          title=f'Utilidad por Año para {selected_company}',
                          labels={'anio': 'Año', 'utilidad_ejercicio': 'Utilidad del Ejercicio'})
@@ -69,5 +78,3 @@ def index():
 # Ejecutar la aplicación
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
-
-
