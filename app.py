@@ -10,16 +10,16 @@ import plotly.express as px
 app = Flask(__name__)
 
 # Configurar la base de datos de Google Cloud SQL
-username = 'sqlserver'  # Usuario de Google Cloud SQL
-password = '1987'  # Contraseña de Google Cloud SQL
-server = '34.123.53.230'  # Dirección IP pública o privada de tu instancia en Google Cloud
+username = os.environ.get('DB_USERNAME')  # Usuario de Google Cloud SQL
+password = os.environ.get('DB_PASSWORD')  # Contraseña de Google Cloud SQL
+server = os.environ.get('DB_SERVER')  # Dirección IP pública o privada de tu instancia en Google Cloud
 port = '1433'  # Puerto de SQL Server, generalmente 1433
-database = 'tienda'  # Nombre de la base de datos en Google Cloud SQL
+database = os.environ.get('DB_DATABASE')  # Nombre de la base de datos en Google Cloud SQL
 
 # Crear la cadena de conexión a Google Cloud SQL usando las variables correctas
 connection_string = (
-f"mssql+pyodbc://{username}:{password}@{server}:{port}/{database}"
-"?driver=ODBC+Driver+18+for+SQL+Server&Encrypt=yes&TrustServerCertificate=yes&Connection Timeout=30"
+    f"mssql+pyodbc://{username}:{password}@{server}:{port}/{database}"
+    "?driver=ODBC+Driver+18+for+SQL+Server&Encrypt=yes&TrustServerCertificate=yes&Connection Timeout=30"
 )
 
 # Crear el engine con la cadena de conexión correcta
