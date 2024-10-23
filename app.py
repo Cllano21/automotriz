@@ -19,11 +19,11 @@ database = os.environ.get('DB_DATABASE')  # Nombre de la base de datos en Google
 # Crear la cadena de conexión a Google Cloud SQL usando las variables correctas
 connection_string = (
     f"mssql+pyodbc://{username}:{password}@{server}:{port}/{database}"
-    "?driver=ODBC+Driver+18+for+SQL+Server&Encrypt=yes&TrustServerCertificate=yes&Connection Timeout=30"
+    "?driver=ODBC+Driver+18+for+SQL+Server&Encrypt=no&TrustServerCertificate=yes&Connection Timeout=30"
 )
 
 # Crear el engine con la cadena de conexión correcta
-engine = sqlalchemy.create_engine(connection_string)
+engine = sqlalchemy.create_engine(connection_string, connect_args={'timeout': 30})
 
 # Crear la instancia de la aplicación Dash
 dash_app = Dash(__name__, server=app, url_base_pathname='/dash/')
