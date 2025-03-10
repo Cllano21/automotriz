@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 import pandas as pd
 import sqlalchemy
 from sqlalchemy import create_engine
@@ -56,6 +56,15 @@ dash_app.layout = html.Div([
 )
 def update_graph(selected_company):
     if selected_company:
+        # Consulta para obtener el nombre de la compañía
+        query_nombre_compania = f"""
+            SELECT nombre 
+            FROM bi_compania 
+            WHERE expediente = '{selected_company}'
+        """
+        nombre_compania = pd.read_sql(query_nombre_compania, engine).iloc[0]['nombre']
+
+        # Consulta para obtener los datos de utilidad por año
         query_ranking = f"""
             SELECT anio, utilidad_ejercicio 
             FROM bi_ranking 
@@ -63,12 +72,15 @@ def update_graph(selected_company):
         """
         data = pd.read_sql(query_ranking, engine)
         data['utilidad_ejercicio'] = pd.to_numeric(data['utilidad_ejercicio'], errors='coerce')
-        data = data.sort_values(by= 'anio')
+        data = data.sort_values(by='anio')
+
+        # Crear el gráfico
         fig = px.line(data, x='anio', y='utilidad_ejercicio',
-                         title=f'Utilidad por Año para {selected_company}',
-                         labels={'anio': 'Año', 'utilidad_ejercicio': 'Utilidad del Ejercicio'},
-                         markers=True)
-                # Formatear el eje Y para mostrar separadores de miles y decimales, sin abreviación
+                      title=f'Utilidad por Año para {nombre_compania}',
+                      labels={'anio': 'Año', 'utilidad_ejercicio': 'Utilidad del Ejercicio'},
+                      markers=True)
+
+        # Formatear el eje Y para mostrar separadores de miles y decimales, sin abreviación
         fig.update_yaxes(
             tickformat=",.2f",  # Formato: separador de miles y 2 decimales
             tickprefix="",      # Sin prefijo
@@ -83,6 +95,7 @@ def update_graph(selected_company):
     else:
         return {}
 
+# Ruta principal de la aplicación Flask
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
