@@ -68,6 +68,17 @@ def update_graph(selected_company):
                          title=f'Utilidad por Año para {selected_company}',
                          labels={'anio': 'Año', 'utilidad_ejercicio': 'Utilidad del Ejercicio'},
                          markers=True)
+                # Formatear el eje Y para mostrar separadores de miles y decimales, sin abreviación
+        fig.update_yaxes(
+            tickformat=",.2f",  # Formato: separador de miles y 2 decimales
+            tickprefix="",      # Sin prefijo
+            ticksuffix=""       # Sin sufijo
+        )
+
+        # Personalizar el hover para mostrar los valores con el mismo formato
+        fig.update_traces(
+            hovertemplate="<b>Año:</b> %{x}<br><b>Utilidad:</b> %{y:,.2f}<extra></extra>"
+        )
         return fig
     else:
         return {}
