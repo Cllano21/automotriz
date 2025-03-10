@@ -64,9 +64,10 @@ def update_graph(selected_company):
         data = pd.read_sql(query_ranking, engine)
         data['utilidad_ejercicio'] = pd.to_numeric(data['utilidad_ejercicio'], errors='coerce')
         data = data.sort_values(by= 'anio')
-        fig = px.scatter(data, x='anio', y='utilidad_ejercicio',
+        fig = px.line(data, x='anio', y='utilidad_ejercicio',
                          title=f'Utilidad por Año para {selected_company}',
-                         labels={'anio': 'Año', 'utilidad_ejercicio': 'Utilidad del Ejercicio'})
+                         labels={'anio': 'Año', 'utilidad_ejercicio': 'Utilidad del Ejercicio'},
+                         markers=True)
         return fig
     else:
         return {}
