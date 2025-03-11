@@ -78,7 +78,8 @@ def update_graph(selected_company):
         fig = px.line(data, x='anio', y='utilidad_ejercicio',
                       title=f'Utilidad por Año para {nombre_compania}',
                       labels={'anio': 'Año', 'utilidad_ejercicio': 'Utilidad del Ejercicio'},
-                      markers=True)
+                      markers=True,
+                      text='utilidad_ejercicio')  # Mostrar valores de y en los puntos
 
         # Formatear el eje Y para mostrar separadores de miles y decimales, sin abreviación
         fig.update_yaxes(
@@ -87,9 +88,11 @@ def update_graph(selected_company):
             ticksuffix=""       # Sin sufijo
         )
 
-        # Personalizar el hover para mostrar los valores con el mismo formato
+        # Personalizar el hover y el texto en los puntos
         fig.update_traces(
-            hovertemplate="<b>Año:</b> %{x}<br><b>Utilidad:</b> %{y:,.2f}<extra></extra>"
+            hovertemplate="<b>Año:</b> %{x}<br><b>Utilidad:</b> %{y:,.2f}<extra></extra>",
+            textposition="top center",  # Posición del texto en los puntos
+            texttemplate="%{text:,.2f}"  # Formato del texto en los puntos
         )
         return fig
     else:
