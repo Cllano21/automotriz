@@ -40,11 +40,12 @@ companias = pd.read_sql(query_companias, engine)
 
 # Layout de la aplicación Dash
 dash_app.layout = html.Div([
+    html.Label("Selecciona una compañía", style={'fontWeight': 'bold'}),
     dcc.Dropdown(
         id='company-dropdown',
         options=[{'label': row.nombre, 'value': row.expediente} for row in companias.itertuples()],
         value=None,
-        placeholder="Selecciona una compañía"
+        placeholder="Seleccione...",
     ),
     dcc.Graph(id='graph-output'),
 ])
